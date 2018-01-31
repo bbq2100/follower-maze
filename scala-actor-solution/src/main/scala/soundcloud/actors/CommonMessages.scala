@@ -1,6 +1,6 @@
 package soundcloud.actors
 
-object Common {
+object CommonMessages {
 
   case object StartSocketServer
 

@@ -1,7 +1,7 @@
 package soundcloud
 
 import soundcloud.actors.Actor.`R.I.P`
-import soundcloud.actors.Common.StartSocketServer
+import soundcloud.actors.CommonMessages.StartSocketServer
 import soundcloud.actors._
 
 object Application {

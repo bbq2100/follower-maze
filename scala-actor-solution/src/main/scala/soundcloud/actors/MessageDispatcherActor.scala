@@ -10,29 +10,35 @@ import scala.collection.mutable
 
 case class MessageDispatcherActor()(implicit system: ActorSystem) extends Actor {
   val clientConnections = mutable.Map[UserId, Actor]()
-  val followers = mutable.Map[UserId, mutable.Set[UserId]]()
-  val NewLine = "\r\n"
+  val followers = new mutable.HashMap[UserId, mutable.Set[UserId]] with mutable.MultiMap[UserId, UserId] {
+    override def default(key: UserId) = makeSet
+  }
 
   override protected def handleMessage = {
     case NewClientConnection(id, out) =>
       clientConnections.put(id, system.materialize(WriterActor(out)))
 
     case Follow(_, rawMessage, from, to) =>
-      followers.getOrElseUpdate(to, mutable.Set()) += from
-      clientConnections.get(to).foreach(_ ! Write(rawMessage))
+      followers.addBinding(to, from)
+      clientConnections.get(to).foreach(write(rawMessage))
 
     case Unfollow(_, _, from, to) =>
-      followers.get(to).map(f => f -= from)
+      followers.removeBinding(to, from)
 
     case Broadcast(_, rawMessage) =>
-      clientConnections.values.foreach(_ ! Write(rawMessage))
+      clientConnections.values.foreach(write(rawMessage))
 
     case PrivateMessage(_, rawMessage, _, to) =>
-      clientConnections.get(to).foreach(_ ! Write(rawMessage))
+      clientConnections.get(to).foreach(write(rawMessage))
 
     case StatusUpdate(_, rawMessage, from) =>
-      followers.get(from).foreach(_.foreach(clientConnections.get(_).foreach(_ ! Write(rawMessage))))
+      val followerIds = followers.get(from)
+      followerIds.foreach(
+        _.foreach(clientConnections.get(_).foreach(write(rawMessage)))
+      )
   }
+
+  private def write(msg: RawMessage): Actor => Unit = _ ! Write(msg)
 
   override protected def onShutdown() = {
     clientConnections.values.foreach(_ ! `R.I.P`)

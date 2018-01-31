@@ -8,15 +8,13 @@ import scala.annotation.tailrec
 
 trait Actor extends Runnable {
 
-  private val messageBox = new LinkedBlockingQueue[Any]
+  private[this] val messageBox = new LinkedBlockingQueue[Any]
 
   protected def handleMessage: PartialFunction[Any, Any]
 
   final def ! : Any => Unit = messageBox.add
 
   protected def onShutdown(): Unit = println(s"Actor $this stopped")
-
-  final def self = this
 
   override def run(): Unit = {
     @tailrec
