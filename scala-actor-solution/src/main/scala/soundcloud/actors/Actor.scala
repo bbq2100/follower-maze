@@ -12,7 +12,10 @@ trait Actor extends Runnable {
 
   protected def handleMessage: PartialFunction[Any, Any]
 
-  final def ! : Any => Unit = messageBox.add
+  final def ! : Any => Unit = {
+    case `R.I.P` => onShutdown() /* Preemptively checking whether to stop the processing because otherwise the Actor could be stuck in an endless-loop */
+    case other => messageBox.add(other)
+  }
 
   protected def onShutdown(): Unit = println(s"Actor $this stopped")
 
@@ -22,17 +25,13 @@ trait Actor extends Runnable {
       case msg if handleMessage.isDefinedAt(msg) =>
         handleMessage(msg)
         loop();
-      case `R.I.P` =>
-        onShutdown()
       case other =>
         println(s"Unhandled message $other @$this")
         loop()
     }
 
     loop()
-
   }
-
 }
 
 object Actor {

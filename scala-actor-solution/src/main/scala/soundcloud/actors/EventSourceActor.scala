@@ -31,7 +31,6 @@ case class EventSourceActor(dispatcherActor: Actor, port: Int) extends Actor {
             messageCounter += 1
           }
         }
-
   }
 
   override protected[this] def onShutdown() = {
