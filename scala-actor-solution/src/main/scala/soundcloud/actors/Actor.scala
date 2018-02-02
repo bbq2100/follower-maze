@@ -13,7 +13,8 @@ trait Actor extends Runnable {
   protected def handleMessage: PartialFunction[Any, Any]
 
   final def ! : Any => Unit = {
-    case `R.I.P` => onShutdown() /* Preemptively checking whether to stop the processing because otherwise the Actor could be stuck in an endless-loop */
+    /* Preemptively checking whether to stop the processing because otherwise the Actor could be stuck in an endless-loop */
+    case `R.I.P` => onShutdown()
     case other => messageBox.add(other)
   }
 

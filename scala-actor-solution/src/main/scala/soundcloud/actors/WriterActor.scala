@@ -3,10 +3,9 @@ package soundcloud.actors
 import java.io.PrintWriter
 
 import soundcloud.actors.MessageDispatcherActor.RawMessage
-import soundcloud.actors.WriterActor.Write
+import soundcloud.actors.WriterActor.{NewLine, Write}
 
 case class WriterActor(out: PrintWriter) extends Actor {
-  val NewLine = "\r\n"
 
   override protected[this] def handleMessage = {
     case Write(message) =>
@@ -22,7 +21,7 @@ case class WriterActor(out: PrintWriter) extends Actor {
 }
 
 object WriterActor {
-
+  val NewLine = "\r\n"
   case class Write(rawMessage: RawMessage)
 
 }
