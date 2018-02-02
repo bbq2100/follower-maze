@@ -12,13 +12,14 @@ There are several functional approaches to allow concurrent computing in a safe 
 The main idea here is to subdivide the given problem into logical computing units/components and only allow communication
 via messages. The actors are also able to inter-communicate. The interesting point: Actors are actually allowed to hold stateful values.
 Theses values are strongly protected from direct access. From a design/architecture perspective this allows to have a better abstraction of
-the domain / frees from low-level threading concerns.
+the domain entities compared traditional programs which also take care for the low-level threading concerns.
 
 ## The Solution
 This solution consists of a small family of Actors: ClientsActor, EventSourceActor and MessageDispatcherActor.
-Besides these main actors there are ad-hoc Actors existing for every incoming Client registration upon server bootstrap.
-That means: every open socket connection / dispatching events to clients is handled inside a dedicated actor instance.
+Besides these main actors there are ad-hoc Actors existing for every incoming Client registration, i.e.
+every open socket connection and the dispatching of events to the clients is handled inside a dedicated actor instance (i.e new thread).
 
-- ClientsActor is responsible for receiving new client connection / registering requests.
-- EventSourceActors reads in all the transferred, unordered event messages from the given follower-maze socket server.
-- MessageDispatcherActor re-routes all received messages in the correct order to awaiting clients.
+- ClientsActor is responsible for receiving and informing the MessageDispatcherActor about new client connections
+- EventSourceActors reads in all the transferred and unordered event messages from the given follower-maze socket server and re-routes
+them ordered via the seqId to the MessageDispatcherActor
+- MessageDispatcherActor re-routes all received messages in the correct order to the awaiting clients
