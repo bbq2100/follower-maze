@@ -18,8 +18,7 @@ This solution consists of a small family of Actors: ClientsActor, EventSourceAct
 Besides these main actors there are ad-hoc Actors existing for every incoming Client registration, i.e. every open socket connection and the dispatching of events to the clients is handled inside a dedicated actor instance (i.e. new thread).
 
 - ClientsActor is responsible for receiving and informing the MessageDispatcherActor about new client connections
-- EventSourceActors reads in all the transferred and unordered event messages from the given follower-maze socket server and re-routes
-them ordered via the seqId to the MessageDispatcherActor
+- EventSourceActors reads in all the transferred and unordered event messages from the given follower-maze socket server and re-routes them ordered via the seqId to the MessageDispatcherActor
 - MessageDispatcherActor re-routes all received messages in the correct order to the awaiting clients
 
 ## Program Flow
