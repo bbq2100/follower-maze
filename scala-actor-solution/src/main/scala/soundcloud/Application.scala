@@ -16,7 +16,7 @@ object Application {
     clientsActor ! StartSocketServer
     eventSourceActor ! StartSocketServer
 
-    println("Press enter to terminate")
+    println("After receiving all messages, press enter to terminate...")
     System.in.read()
 
     eventSourceActor ! `R.I.P`
