@@ -38,6 +38,7 @@ case class ClientsActor(dispatcherActor: Actor, port: Int) extends Actor {
 }
 
 object ClientsActor {
+  // TODO: lazily instantiate the printwriter inside
   def printWriter: OutputStream => PrintWriter = out =>
     new PrintWriter(new BufferedWriter(
       new OutputStreamWriter(out, Charset.forName("UTF-8"))))
