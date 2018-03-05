@@ -11,7 +11,7 @@ import scala.collection.mutable
 case class MessageDispatcherActor()(implicit system: ActorSystem) extends Actor {
   // TODO: make me protected?
   val clientConnections = mutable.Map[UserId, Actor]()
-  private val followers = new mutable.HashMap[UserId, mutable.Set[UserId]] with mutable.MultiMap[UserId, UserId] {
+  val followers = new mutable.HashMap[UserId, mutable.Set[UserId]] with mutable.MultiMap[UserId, UserId] {
     override def default(key: UserId) = makeSet
   }
 
