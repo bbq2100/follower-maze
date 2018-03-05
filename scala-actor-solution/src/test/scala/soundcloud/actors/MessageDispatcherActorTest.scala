@@ -45,5 +45,12 @@ class MessageDispatcherActorTest extends UnitSpec {
 
   }
 
+
+  // TODO: maybe update test description
+  it should "allow to super-follow clients" in {
+
+  }
+
+
 }
 
